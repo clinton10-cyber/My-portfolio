@@ -1,0 +1,23 @@
+name: Unzip and Deploy Site
+
+on: [push]  # Triggers on upload/commit
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Unzip the file
+      run: |
+        unzip me.zip -d .  # Extracts contents to repo root
+        rm me.zip  # Deletes the ZIP after (optional—remove this line if you want to keep it)
+
+    - name: Commit extracted files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git diff --staged --quiet || git commit -m "Extracted site files from me.zip"
+        git push
